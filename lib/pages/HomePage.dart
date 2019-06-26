@@ -3,11 +3,14 @@ import 'package:trip_learn/dao/home_dao.dart';
 import 'package:trip_learn/model/common_model.dart';
 import 'package:trip_learn/model/grid_nav_model.dart';
 import 'package:trip_learn/model/home_model.dart';
+import 'package:trip_learn/model/sales_box_model.dart';
 import 'package:trip_learn/util/NavigatorUtil.dart';
 import 'package:trip_learn/widget/GridNav.dart';
 import 'package:trip_learn/widget/local_nav.dart';
+import 'package:trip_learn/widget/sales_box.dart';
 import 'package:trip_learn/widget/search_bar.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:trip_learn/widget/sub_nav.dart';
 import 'SerachePage.dart';
 
 const APPBAR_SCROLL_OFFSET = 100;
@@ -28,7 +31,9 @@ class _HomePage extends State<HomePage> {
 
   List<CommonModel> bannerList = [];
   List<CommonModel> localNavList = [];
+  List<CommonModel> subNavList = [];
   GridNavModel gridNavModel;
+  SalesBoxModel salesBoxModel;
 
   bool _loading = true;
 
@@ -90,18 +95,11 @@ class _HomePage extends State<HomePage> {
           child: GridNav(gridNavModel: gridNavModel),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
-          child: Text(
-            "丛林探险",
-            style: TextStyle(fontSize: 20, height: 5),
-          ),
-        ),
+            padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+            child: SubNav(subNavList: subNavList)),
         Padding(
           padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
-          child: Text(
-            "登高远望",
-            style: TextStyle(fontSize: 20, height: 5),
-          ),
+          child: SalesBox(salesBoxModel:salesBoxModel),
         ),
         Padding(
           padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
@@ -180,10 +178,15 @@ class _HomePage extends State<HomePage> {
   Future<Null> _handleRefresh() async {
     try {
       HomeModel model = await HomeDao.fetch();
+//      .then((onError){
+//        print(onError);
+//      });
       setState(() {
         bannerList = model.bannerList;
         localNavList = model.localNavList;
+        subNavList = model.subNavList;
         gridNavModel = model.gridNav;
+        salesBoxModel = model.salesBoxModel;
         _loading = false;
       });
     } catch (e) {
